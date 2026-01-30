@@ -58,6 +58,8 @@ func (a *App) StartTrace(target string) string {
 	a.session.Start(traceCtx,
 		// On hop callback
 		func(hop *trace.Hop) {
+			// Log hop for debugging
+			println("Hop received:", hop.HopNumber, hop.IPAddress)
 			runtime.EventsEmit(a.ctx, "trace:hop", trace.TraceHopEvent{
 				SessionID: sessionID,
 				Hop:       hop,
@@ -65,6 +67,7 @@ func (a *App) StartTrace(target string) string {
 		},
 		// On complete callback
 		func(totalHops int) {
+			println("Trace completed:", totalHops, "hops")
 			runtime.EventsEmit(a.ctx, "trace:completed", trace.TraceCompletedEvent{
 				SessionID: sessionID,
 				TotalHops: totalHops,
@@ -73,6 +76,7 @@ func (a *App) StartTrace(target string) string {
 		},
 		// On error callback
 		func(err error) {
+			println("Trace error:", err.Error())
 			runtime.EventsEmit(a.ctx, "trace:error", trace.TraceErrorEvent{
 				SessionID: sessionID,
 				Error:     err.Error(),
