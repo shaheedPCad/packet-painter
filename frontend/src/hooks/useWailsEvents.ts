@@ -16,14 +16,17 @@ export function useWailsEvents() {
   useEffect(() => {
     // Subscribe to trace events
     const unsubStarted = EventsOn('trace:started', (data: TraceStartedEvent) => {
+      console.log('trace:started', data);
       startSession(data.sessionId, data.target, data.source);
     });
 
     const unsubHop = EventsOn('trace:hop', (data: TraceHopEvent) => {
+      console.log('trace:hop', data.hop.hopNumber, data.hop.ipAddress);
       addHop(data.hop);
     });
 
     const unsubCompleted = EventsOn('trace:completed', (data: TraceCompletedEvent) => {
+      console.log('trace:completed', data);
       completeSession(data.totalHops);
     });
 

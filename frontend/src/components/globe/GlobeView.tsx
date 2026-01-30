@@ -29,23 +29,31 @@ export function GlobeView() {
 
   // Camera auto-pan to follow new hops
   useEffect(() => {
-    if (globeRef.current && hops.length > 0) {
-      const pos = getCameraPosition(hops, source);
-      globeRef.current.pointOfView(
-        { lat: pos.lat, lng: pos.lng, altitude: pos.altitude },
-        1000 // Animation duration
-      );
+    try {
+      if (globeRef.current && hops.length > 0) {
+        const pos = getCameraPosition(hops, source);
+        globeRef.current.pointOfView(
+          { lat: pos.lat, lng: pos.lng, altitude: pos.altitude },
+          1000 // Animation duration
+        );
+      }
+    } catch (e) {
+      console.error('Camera position error:', e);
     }
   }, [hops.length, source]);
 
   // Auto-rotate control
   useEffect(() => {
-    if (globeRef.current) {
-      const controls = globeRef.current.controls();
-      if (controls) {
-        controls.autoRotate = !isRunning && hops.length === 0;
-        controls.autoRotateSpeed = 0.5;
+    try {
+      if (globeRef.current) {
+        const controls = globeRef.current.controls();
+        if (controls) {
+          controls.autoRotate = !isRunning && hops.length === 0;
+          controls.autoRotateSpeed = 0.5;
+        }
       }
+    } catch (e) {
+      console.error('Auto-rotate error:', e);
     }
   }, [isRunning, hops.length]);
 
@@ -123,8 +131,8 @@ export function GlobeView() {
         atmosphereAltitude={0.15}
         // Performance
         animateIn={true}
-        width={containerRef.current?.clientWidth ?? window.innerWidth - 320}
-        height={containerRef.current?.clientHeight ?? window.innerHeight - 56}
+        width={Math.max(100, containerRef.current?.clientWidth ?? window.innerWidth - 320)}
+        height={Math.max(100, containerRef.current?.clientHeight ?? window.innerHeight - 56)}
       />
     </motion.div>
   );
