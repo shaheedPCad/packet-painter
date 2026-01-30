@@ -77,7 +77,7 @@ export function HopItem({ hop, index, isSelected, onSelect }: HopItemProps) {
         </div>
 
         {/* RTT breakdown */}
-        {isSelected && (
+        {isSelected && hop.rtt && hop.rtt.length > 0 && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -90,6 +90,15 @@ export function HopItem({ hop, index, isSelected, onSelect }: HopItemProps) {
                 </span>
               ))}
             </div>
+          </motion.div>
+        )}
+        {isSelected && hop.isTimeout && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="mt-3 pt-3 border-t border-border"
+          >
+            <p className="text-xs text-muted-foreground">Request timed out</p>
           </motion.div>
         )}
       </Card>

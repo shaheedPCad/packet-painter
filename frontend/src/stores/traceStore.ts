@@ -29,21 +29,31 @@ export const useTraceStore = create<TraceState>((set) => ({
   selectedHopIndex: null,
 
   startSession: (id, target, source) =>
-    set({
-      session: {
-        id,
-        target,
-        status: 'running',
-        startTime: Date.now(),
-        hops: [],
-        source,
-      },
-      selectedHopIndex: null,
+    set((state) => {
+      // Prevent duplicate session starts (React StrictMode)
+      if (state.session?.id === id) {
+        return state;
+      }
+      return {
+        session: {
+          id,
+          target,
+          status: 'running',
+          startTime: Date.now(),
+          hops: [],
+          source,
+        },
+        selectedHopIndex: null,
+      };
     }),
 
   addHop: (hop) =>
     set((state) => {
       if (!state.session) return state;
+      // Prevent duplicate hops (React StrictMode causes double events)
+      if (state.session.hops.some(h => h.hopNumber === hop.hopNumber)) {
+        return state;
+      }
       return {
         session: {
           ...state.session,
