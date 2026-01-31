@@ -127,26 +127,27 @@ export function getCameraPosition(
   hops: Hop[],
   source: GeoLocation | null
 ): { lat: number; lng: number; altitude: number } {
-  // Default: centered on Pacific for SF-Tokyo route
   const defaultPos = { lat: 30, lng: -150, altitude: 2.5 };
 
-  if (hops.length === 0 && source) {
+  // Find the last hop with a valid location (search backwards)
+  for (let i = hops.length - 1; i >= 0; i--) {
+    const location = hops[i].location;
+    if (location) {
+      return {
+        lat: location.latitude,
+        lng: location.longitude,
+        altitude: 2.5,
+      };
+    }
+  }
+
+  // Fall back to source if no hops have location
+  if (source) {
     return {
       lat: source.latitude,
       lng: source.longitude,
       altitude: 2.5,
     };
-  }
-
-  if (hops.length > 0) {
-    const lastHop = hops[hops.length - 1];
-    if (lastHop.location) {
-      return {
-        lat: lastHop.location.latitude,
-        lng: lastHop.location.longitude,
-        altitude: 2.5,
-      };
-    }
   }
 
   return defaultPos;
