@@ -8,13 +8,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"packet-painter/internal/geo"
 )
 
 // MockRoute represents a predefined traceroute path
 type MockRoute struct {
 	Name        string
-	Source      GeoLocation
-	Destination GeoLocation
+	Source      geo.Location
+	Destination geo.Location
 	Hops        []MockHop
 }
 
@@ -22,7 +23,7 @@ type MockRoute struct {
 type MockHop struct {
 	IPAddress string
 	Hostname  string
-	Location  GeoLocation
+	Location  geo.Location
 	BaseRTT   float64 // Base RTT in milliseconds
 }
 
@@ -30,7 +31,7 @@ type MockHop struct {
 var (
 	SFToTokyoRoute = MockRoute{
 		Name: "SF to Tokyo",
-		Source: GeoLocation{
+		Source: geo.Location{
 			Latitude:    37.7749,
 			Longitude:   -122.4194,
 			City:        "San Francisco",
@@ -38,7 +39,7 @@ var (
 			Country:     "United States",
 			CountryCode: "US",
 		},
-		Destination: GeoLocation{
+		Destination: geo.Location{
 			Latitude:    35.6762,
 			Longitude:   139.6503,
 			City:        "Tokyo",
@@ -49,7 +50,7 @@ var (
 			{
 				IPAddress: "192.168.1.1",
 				Hostname:  "router.local",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 37.7749, Longitude: -122.4194,
 					City: "San Francisco", Country: "United States", CountryCode: "US",
 				},
@@ -58,7 +59,7 @@ var (
 			{
 				IPAddress: "67.59.231.1",
 				Hostname:  "gw.sfca.comcast.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 37.7749, Longitude: -122.4194,
 					City: "San Francisco", Country: "United States", CountryCode: "US",
 				},
@@ -67,7 +68,7 @@ var (
 			{
 				IPAddress: "4.68.127.73",
 				Hostname:  "ae-2.r21.snjsca04.us.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 37.3382, Longitude: -121.8863,
 					City: "San Jose", Country: "United States", CountryCode: "US",
 				},
@@ -76,7 +77,7 @@ var (
 			{
 				IPAddress: "129.250.2.138",
 				Hostname:  "ae-5.r24.snjsca04.us.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 37.3382, Longitude: -121.8863,
 					City: "San Jose", Country: "United States", CountryCode: "US",
 				},
@@ -85,7 +86,7 @@ var (
 			{
 				IPAddress: "129.250.3.172",
 				Hostname:  "ae-1.r25.lsanca07.us.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 34.0522, Longitude: -118.2437,
 					City: "Los Angeles", Country: "United States", CountryCode: "US",
 				},
@@ -94,7 +95,7 @@ var (
 			{
 				IPAddress: "129.250.6.98",
 				Hostname:  "ae-3.r02.lsanca07.us.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 34.0522, Longitude: -118.2437,
 					City: "Los Angeles", Country: "United States", CountryCode: "US",
 				},
@@ -103,7 +104,7 @@ var (
 			{
 				IPAddress: "129.250.2.129",
 				Hostname:  "ae-0.r30.osakjp02.jp.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 21.3069, Longitude: -157.8583,
 					City: "Honolulu", Country: "United States", CountryCode: "US",
 				},
@@ -112,7 +113,7 @@ var (
 			{
 				IPAddress: "129.250.4.14",
 				Hostname:  "ae-1.r02.tokyjp05.jp.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 35.6762, Longitude: 139.6503,
 					City: "Tokyo", Country: "Japan", CountryCode: "JP",
 				},
@@ -121,7 +122,7 @@ var (
 			{
 				IPAddress: "61.213.162.85",
 				Hostname:  "ae-1.a02.tokyjp05.jp.ra.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 35.6762, Longitude: 139.6503,
 					City: "Tokyo", Country: "Japan", CountryCode: "JP",
 				},
@@ -130,7 +131,7 @@ var (
 			{
 				IPAddress: "210.152.135.178",
 				Hostname:  "tokyo.jp",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 35.6762, Longitude: 139.6503,
 					City: "Tokyo", Country: "Japan", CountryCode: "JP",
 				},
@@ -141,7 +142,7 @@ var (
 
 	NYCToLondonRoute = MockRoute{
 		Name: "NYC to London",
-		Source: GeoLocation{
+		Source: geo.Location{
 			Latitude:    40.7128,
 			Longitude:   -74.0060,
 			City:        "New York",
@@ -149,7 +150,7 @@ var (
 			Country:     "United States",
 			CountryCode: "US",
 		},
-		Destination: GeoLocation{
+		Destination: geo.Location{
 			Latitude:    51.5074,
 			Longitude:   -0.1278,
 			City:        "London",
@@ -160,7 +161,7 @@ var (
 			{
 				IPAddress: "192.168.1.1",
 				Hostname:  "router.local",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 40.7128, Longitude: -74.0060,
 					City: "New York", Country: "United States", CountryCode: "US",
 				},
@@ -169,7 +170,7 @@ var (
 			{
 				IPAddress: "68.85.103.109",
 				Hostname:  "gw.nyc.verizon.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 40.7128, Longitude: -74.0060,
 					City: "New York", Country: "United States", CountryCode: "US",
 				},
@@ -178,7 +179,7 @@ var (
 			{
 				IPAddress: "154.54.30.185",
 				Hostname:  "ae-6.r21.nycmny01.us.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 40.7128, Longitude: -74.0060,
 					City: "New York", Country: "United States", CountryCode: "US",
 				},
@@ -187,7 +188,7 @@ var (
 			{
 				IPAddress: "154.54.42.97",
 				Hostname:  "ae-2.r24.stfrct01.us.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 41.0534, Longitude: -73.5387,
 					City: "Stamford", Country: "United States", CountryCode: "US",
 				},
@@ -196,7 +197,7 @@ var (
 			{
 				IPAddress: "154.54.58.185",
 				Hostname:  "ae-3.r20.londen12.uk.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 51.5074, Longitude: -0.1278,
 					City: "London", Country: "United Kingdom", CountryCode: "GB",
 				},
@@ -205,7 +206,7 @@ var (
 			{
 				IPAddress: "130.117.1.78",
 				Hostname:  "ae-1.r02.londen12.uk.bb.gin.ntt.net",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 51.5074, Longitude: -0.1278,
 					City: "London", Country: "United Kingdom", CountryCode: "GB",
 				},
@@ -214,7 +215,7 @@ var (
 			{
 				IPAddress: "185.50.220.4",
 				Hostname:  "london.uk",
-				Location: GeoLocation{
+				Location: geo.Location{
 					Latitude: 51.5074, Longitude: -0.1278,
 					City: "London", Country: "United Kingdom", CountryCode: "GB",
 				},
@@ -261,7 +262,7 @@ func selectRoute(target string) *MockRoute {
 }
 
 // GetSource returns the source location for this session
-func (s *MockSession) GetSource() *GeoLocation {
+func (s *MockSession) GetSource() *geo.Location {
 	return &s.Route.Source
 }
 

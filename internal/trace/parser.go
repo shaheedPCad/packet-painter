@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"packet-painter/internal/geo"
 )
 
 // parseDestinationIP extracts the destination IP from the traceroute header line (Unix)
@@ -18,13 +20,16 @@ func parseDestinationIP(line string) string {
 	return ""
 }
 
+// GeoLookupFunc is a function type for looking up IP geolocation
+type GeoLookupFunc func(ip string) *geo.Location
+
 // parseUnixHopLine parses a single hop line from traceroute output
 // Examples:
 //
 //	" 1  192.168.1.1  0.456 ms"
 //	" 3  * * *"
 //	" 5  10.0.0.1  5.1 ms  5.2 ms  5.3 ms"
-func parseUnixHopLine(line string, destinationIP string) *Hop {
+func parseUnixHopLine(line string, destinationIP string, geoLookup GeoLookupFunc) *Hop {
 	fields := strings.Fields(line)
 	if len(fields) < 2 {
 		return nil
@@ -83,12 +88,18 @@ func parseUnixHopLine(line string, destinationIP string) *Hop {
 		avgRTT = sum / float64(len(rttValues))
 	}
 
+	// Look up geolocation if function provided
+	var location *geo.Location
+	if geoLookup != nil {
+		location = geoLookup(ipAddress)
+	}
+
 	return &Hop{
 		HopNumber:     hopNum,
 		IPAddress:     ipAddress,
 		RTT:           rttValues,
 		AvgRTT:        avgRTT,
-		Location:      nil, // No geo lookup
+		Location:      location,
 		IsTimeout:     false,
 		IsDestination: ipAddress == destinationIP,
 		Timestamp:     time.Now().UnixMilli(),
@@ -112,7 +123,7 @@ func parseWindowsDestinationIP(line string) string {
 //	"  1    <1 ms    <1 ms    <1 ms  192.168.1.1"
 //	"  2     5 ms     4 ms     5 ms  10.0.0.1"
 //	"  3     *        *        *     Request timed out."
-func parseWindowsHopLine(line string, destinationIP string) *Hop {
+func parseWindowsHopLine(line string, destinationIP string, geoLookup GeoLookupFunc) *Hop {
 	line = strings.TrimSpace(line)
 	if line == "" {
 		return nil
@@ -213,12 +224,18 @@ func parseWindowsHopLine(line string, destinationIP string) *Hop {
 		avgRTT = sum / float64(len(rttValues))
 	}
 
+	// Look up geolocation if function provided
+	var location *geo.Location
+	if geoLookup != nil {
+		location = geoLookup(ipAddress)
+	}
+
 	return &Hop{
 		HopNumber:     hopNum,
 		IPAddress:     ipAddress,
 		RTT:           rttValues,
 		AvgRTT:        avgRTT,
-		Location:      nil, // No geo lookup
+		Location:      location,
 		IsTimeout:     false,
 		IsDestination: ipAddress == destinationIP,
 		Timestamp:     time.Now().UnixMilli(),

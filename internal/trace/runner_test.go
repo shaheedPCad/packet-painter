@@ -112,7 +112,7 @@ func TestParseUnixHopLine(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := parseUnixHopLine(tt.input, tt.destinationIP)
+			result := parseUnixHopLine(tt.input, tt.destinationIP, nil)
 
 			if tt.expected == nil {
 				if result != nil {
@@ -263,7 +263,7 @@ func TestParseWindowsHopLine(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := parseWindowsHopLine(tt.input, tt.destinationIP)
+			result := parseWindowsHopLine(tt.input, tt.destinationIP, nil)
 
 			if tt.expected == nil {
 				if result != nil {
@@ -341,7 +341,7 @@ func TestParseUnixFullOutput(t *testing.T) {
 	_ = output // Just to show the full output format
 
 	for i, line := range lines {
-		hop := parseUnixHopLine(line, "8.8.8.8") // Using different dest for this test
+		hop := parseUnixHopLine(line, "8.8.8.8", nil) // Using different dest for this test
 		if hop == nil {
 			t.Errorf("Failed to parse line %d: %q", i, line)
 			continue
@@ -380,7 +380,7 @@ func TestParseWindowsFullOutput(t *testing.T) {
 	}
 
 	for i, line := range lines {
-		hop := parseWindowsHopLine(line, "72.14.215.85")
+		hop := parseWindowsHopLine(line, "72.14.215.85", nil)
 		if hop == nil {
 			t.Errorf("Failed to parse line %d: %q", i, line)
 			continue

@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+
+	"packet-painter/internal/geo"
 )
 
 // unixRunner implements Runner for Linux and macOS
@@ -19,7 +21,7 @@ func newPlatformRunner() Runner {
 }
 
 // Run executes traceroute and streams hop results
-func (r *unixRunner) Run(ctx context.Context, target string, onHop HopCallback, onComplete CompletedCallback, onError ErrorCallback) error {
+func (r *unixRunner) Run(ctx context.Context, target string, geoLookup *geo.Lookup, onHop HopCallback, onComplete CompletedCallback, onError ErrorCallback) error {
 	// Command: traceroute -n -q 1 -w 1 -m 30 <target>
 	// -n: No DNS lookup (just IPs)
 	// -q 1: Single probe per hop
@@ -61,8 +63,12 @@ func (r *unixRunner) Run(ctx context.Context, target string, onHop HopCallback, 
 			continue
 		}
 
-		// Parse hop line
-		hop := parseUnixHopLine(line, destinationIP)
+		// Parse hop line with geo lookup
+		var geoLookupFunc GeoLookupFunc
+		if geoLookup != nil {
+			geoLookupFunc = geoLookup.GetLocation
+		}
+		hop := parseUnixHopLine(line, destinationIP, geoLookupFunc)
 		if hop != nil {
 			hopCount++
 			if onHop != nil {

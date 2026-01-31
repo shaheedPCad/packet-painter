@@ -1,34 +1,26 @@
 package trace
 
-// GeoLocation represents geographic coordinates with optional location details
-type GeoLocation struct {
-	Latitude    float64 `json:"latitude"`
-	Longitude   float64 `json:"longitude"`
-	City        string  `json:"city,omitempty"`
-	Region      string  `json:"region,omitempty"`
-	Country     string  `json:"country,omitempty"`
-	CountryCode string  `json:"countryCode,omitempty"`
-}
+import "packet-painter/internal/geo"
 
 // Hop represents a single hop in a traceroute
 type Hop struct {
-	HopNumber     int          `json:"hopNumber"`
-	IPAddress     string       `json:"ipAddress"`
-	Hostname      string       `json:"hostname,omitempty"`
-	RTT           []float64    `json:"rtt"`
-	AvgRTT        float64      `json:"avgRtt"`
-	Location      *GeoLocation `json:"location"`
-	IsTimeout     bool         `json:"isTimeout"`
-	IsDestination bool         `json:"isDestination"`
-	Timestamp     int64        `json:"timestamp"`
+	HopNumber     int           `json:"hopNumber"`
+	IPAddress     string        `json:"ipAddress"`
+	Hostname      string        `json:"hostname,omitempty"`
+	RTT           []float64     `json:"rtt"`
+	AvgRTT        float64       `json:"avgRtt"`
+	Location      *geo.Location `json:"location"`
+	IsTimeout     bool          `json:"isTimeout"`
+	IsDestination bool          `json:"isDestination"`
+	Timestamp     int64         `json:"timestamp"`
 }
 
 // TraceStartedEvent is emitted when a trace begins
 type TraceStartedEvent struct {
-	SessionID string       `json:"sessionId"`
-	Target    string       `json:"target"`
-	Source    *GeoLocation `json:"source"`
-	Timestamp int64        `json:"timestamp"`
+	SessionID string        `json:"sessionId"`
+	Target    string        `json:"target"`
+	Source    *geo.Location `json:"source"`
+	Timestamp int64         `json:"timestamp"`
 }
 
 // TraceHopEvent is emitted for each hop discovered
