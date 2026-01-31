@@ -1,42 +1,29 @@
 import { useEffect, useRef, useMemo, useCallback } from 'react';
 import Globe, { GlobeMethods } from 'react-globe.gl';
-import * as THREE from 'three';
 import { useTraceStore } from '@/stores/traceStore';
 import {
   generateArcs,
   generatePoints,
   getCameraPosition,
-  buildFlightPath,
   GlobeArc,
   GlobePoint,
 } from '@/lib/globe-utils';
-import { useFlightAnimation } from '@/hooks/useFlightAnimation';
-import { FlightControls } from './FlightControls';
+import { useSubmarineCables } from '@/hooks/useSubmarineCables';
+import { SubmarineCable, HIGHLIGHTED_CABLE_COLOR } from '@/lib/submarine-cables';
 import { motion } from 'framer-motion';
 
 export function GlobeView() {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { session, selectedHopIndex, selectHop, flightMode, exitFlightMode } =
-    useTraceStore();
+  const { session, selectedHopIndex, selectHop } = useTraceStore();
+
+  // Submarine cables
+  const { cables, showCables } = useSubmarineCables();
 
   const hops = session?.hops ?? [];
   const source = session?.source ?? null;
   const isRunning = session?.status === 'running';
-
-  // Flight animation
-  const { state: flightState, controls: flightControls } = useFlightAnimation(
-    hops,
-    source
-  );
-  const isFlying = flightState.isFlying;
-
-  // Build flight path for segment count
-  const flightSegments = useMemo(
-    () => buildFlightPath(hops, source),
-    [hops, source]
-  );
 
   // Generate visualization data
   const arcs = useMemo(() => generateArcs(hops, source), [hops, source]);
@@ -45,9 +32,8 @@ export function GlobeView() {
     [hops, source, selectedHopIndex]
   );
 
-  // Camera auto-pan to follow new hops (disabled during flight mode)
+  // Camera auto-pan to follow new hops
   useEffect(() => {
-    if (isFlying) return; // Let flight mode control camera
     try {
       if (globeRef.current && hops.length > 0) {
         const pos = getCameraPosition(hops, source);
@@ -59,62 +45,22 @@ export function GlobeView() {
     } catch (e) {
       console.error('Camera position error:', e);
     }
-  }, [hops.length, source, isFlying]);
+  }, [hops.length, source]);
 
-  // Flight mode camera following
-  useEffect(() => {
-    if (!isFlying || !flightState.cameraPosition || !globeRef.current) return;
-
-    try {
-      globeRef.current.pointOfView(
-        {
-          lat: flightState.cameraPosition.lat,
-          lng: flightState.cameraPosition.lng,
-          altitude: flightState.cameraPosition.altitude,
-        },
-        50 // Fast update for smooth following
-      );
-    } catch (e) {
-      console.error('Flight camera error:', e);
-    }
-  }, [isFlying, flightState.cameraPosition]);
-
-  // Start flight when flight mode is enabled
-  useEffect(() => {
-    if (flightMode.enabled && !isFlying && flightSegments.length > 0) {
-      flightControls.startFlight();
-    }
-  }, [flightMode.enabled, isFlying, flightSegments.length, flightControls]);
-
-  // Sync speed from store to flight animation
-  useEffect(() => {
-    if (flightState.speed !== flightMode.speed) {
-      flightControls.setSpeed(flightMode.speed);
-    }
-  }, [flightMode.speed, flightState.speed, flightControls]);
-
-  // Handle flight exit
-  const handleExitFlight = useCallback(() => {
-    flightControls.exitFlight();
-    exitFlightMode();
-  }, [flightControls, exitFlightMode]);
-
-  // Auto-rotate control (disabled during flight mode)
+  // Auto-rotate control
   useEffect(() => {
     try {
       if (globeRef.current) {
         const controls = globeRef.current.controls();
         if (controls) {
-          controls.autoRotate = !isRunning && !isFlying && hops.length === 0;
+          controls.autoRotate = !isRunning && hops.length === 0;
           controls.autoRotateSpeed = 0.5;
-          // Disable user interaction during flight mode for cinematic effect
-          controls.enabled = !isFlying;
         }
       }
     } catch (e) {
       console.error('Auto-rotate error:', e);
     }
-  }, [isRunning, hops.length, isFlying]);
+  }, [isRunning, hops.length]);
 
   // Handle point click
   const handlePointClick = useCallback(
@@ -150,77 +96,30 @@ export function GlobeView() {
     </div>`;
   };
 
-  // Packet custom layer data
-  interface PacketData {
-    lat: number;
-    lng: number;
-  }
-
-  const packetData: PacketData[] = useMemo(() => {
-    if (!isFlying || !flightState.packetPosition) return [];
-    return [
-      {
-        lat: flightState.packetPosition.lat,
-        lng: flightState.packetPosition.lng,
-      },
-    ];
-  }, [isFlying, flightState.packetPosition]);
-
-  // Create glowing packet mesh
-  const createPacketObject = useCallback(() => {
-    const group = new THREE.Group();
-
-    // Core sphere
-    const geometry = new THREE.SphereGeometry(0.02, 16, 16);
-    const material = new THREE.MeshBasicMaterial({
-      color: 0x00ff88,
-      transparent: true,
-      opacity: 0.95,
-    });
-    const sphere = new THREE.Mesh(geometry, material);
-    group.add(sphere);
-
-    // Outer glow sphere
-    const glowGeometry = new THREE.SphereGeometry(0.035, 16, 16);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x00ff88,
-      transparent: true,
-      opacity: 0.3,
-    });
-    const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
-    group.add(glowSphere);
-
-    // Second glow layer for more effect
-    const outerGlowGeometry = new THREE.SphereGeometry(0.05, 16, 16);
-    const outerGlowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x00ff88,
-      transparent: true,
-      opacity: 0.15,
-    });
-    const outerGlowSphere = new THREE.Mesh(outerGlowGeometry, outerGlowMaterial);
-    group.add(outerGlowSphere);
-
-    return group;
-  }, []);
-
-  // Accessors for custom layer
-  const getCustomLat = (d: object) => (d as PacketData).lat;
-  const getCustomLng = (d: object) => (d as PacketData).lng;
-  const getCustomAltitude = () => 0.02; // Slight elevation above surface
-
-  // Wrap exit handler to use in controls
-  const wrappedFlightControls = useMemo(
-    () => ({
-      ...flightControls,
-      exitFlight: handleExitFlight,
-    }),
-    [flightControls, handleExitFlight]
+  // Submarine cable path accessors
+  const pathsData = useMemo(
+    () => (showCables ? cables : []),
+    [showCables, cables]
   );
+  const getPathPoints = (d: object) => (d as SubmarineCable).coordinates;
+  const getPathPointLat = (p: [number, number]) => p[1]; // GeoJSON is [lng, lat]
+  const getPathPointLng = (p: [number, number]) => p[0];
+  const getPathColor = (d: object) => {
+    const cable = d as SubmarineCable;
+    return cable.isHighlighted ? HIGHLIGHTED_CABLE_COLOR : 'rgba(0, 100, 180, 0.3)';
+  };
+  const getPathLabel = (d: object) => {
+    const cable = d as SubmarineCable;
+    return `<div class="bg-card/90 backdrop-blur px-2 py-1 rounded text-xs">
+      <div class="font-medium">${cable.name}</div>
+      ${cable.isHighlighted ? '<div class="text-cyan-400">Active route</div>' : ''}
+    </div>`;
+  };
 
   return (
     <motion.div
       ref={containerRef}
-      className="globe-container w-full h-full relative"
+      className="globe-container w-full h-full"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -252,18 +151,18 @@ export function GlobeView() {
         pointLabel={getPointLabel}
         onPointClick={handlePointClick}
         pointsTransitionDuration={300}
-        // Custom layer for flying packet
-        customLayerData={packetData}
-        customThreeObject={createPacketObject}
-        customThreeObjectUpdate={(obj, d) => {
-          // Position is handled by the globe library
-          // We could add pulse animation here if needed
-        }}
-        customLayerLabel={() => ''}
-        // @ts-expect-error react-globe.gl types may not include these
-        customLayerLat={getCustomLat}
-        customLayerLng={getCustomLng}
-        customLayerAltitude={getCustomAltitude}
+        // Submarine cables (paths layer)
+        pathsData={pathsData}
+        pathPoints={getPathPoints}
+        pathPointLat={getPathPointLat}
+        pathPointLng={getPathPointLng}
+        pathColor={getPathColor}
+        pathStroke={1}
+        pathDashLength={1}
+        pathDashGap={0}
+        pathDashAnimateTime={0}
+        pathLabel={getPathLabel}
+        pathTransitionDuration={0}
         // Atmosphere
         atmosphereColor="#3a82f7"
         atmosphereAltitude={0.15}
@@ -272,16 +171,6 @@ export function GlobeView() {
         width={Math.max(100, containerRef.current?.clientWidth ?? window.innerWidth - 320)}
         height={Math.max(100, containerRef.current?.clientHeight ?? window.innerHeight - 56)}
       />
-
-      {/* Flight mode controls overlay */}
-      {isFlying && (
-        <FlightControls
-          state={flightState}
-          controls={wrappedFlightControls}
-          hops={hops}
-          totalSegments={flightSegments.length}
-        />
-      )}
     </motion.div>
   );
 }

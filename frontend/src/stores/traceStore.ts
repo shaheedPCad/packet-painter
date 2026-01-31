@@ -1,15 +1,10 @@
 import { create } from 'zustand';
 import { TraceSession, Hop, GeoLocation, TraceStatus } from '@/types';
 
-interface FlightMode {
-  enabled: boolean;
-  speed: number; // 0.5x, 1x, 2x
-}
-
 interface TraceState {
   session: TraceSession | null;
   selectedHopIndex: number | null;
-  flightMode: FlightMode;
+  showSubmarineCables: boolean;
 
   // Actions
   startSession: (id: string, target: string, source: GeoLocation) => void;
@@ -19,9 +14,7 @@ interface TraceState {
   setError: (error: string) => void;
   selectHop: (index: number | null) => void;
   reset: () => void;
-  toggleFlightMode: () => void;
-  setFlightSpeed: (speed: number) => void;
-  exitFlightMode: () => void;
+  toggleSubmarineCables: () => void;
 }
 
 const initialSession: TraceSession = {
@@ -36,7 +29,7 @@ const initialSession: TraceSession = {
 export const useTraceStore = create<TraceState>((set) => ({
   session: null,
   selectedHopIndex: null,
-  flightMode: { enabled: false, speed: 1 },
+  showSubmarineCables: true,
 
   startSession: (id, target, source) =>
     set((state) => {
@@ -114,21 +107,10 @@ export const useTraceStore = create<TraceState>((set) => ({
 
   selectHop: (index) => set({ selectedHopIndex: index }),
 
-  reset: () =>
-    set({ session: null, selectedHopIndex: null, flightMode: { enabled: false, speed: 1 } }),
+  reset: () => set({ session: null, selectedHopIndex: null }),
 
-  toggleFlightMode: () =>
+  toggleSubmarineCables: () =>
     set((state) => ({
-      flightMode: { ...state.flightMode, enabled: !state.flightMode.enabled },
-    })),
-
-  setFlightSpeed: (speed) =>
-    set((state) => ({
-      flightMode: { ...state.flightMode, speed },
-    })),
-
-  exitFlightMode: () =>
-    set((state) => ({
-      flightMode: { ...state.flightMode, enabled: false },
+      showSubmarineCables: !state.showSubmarineCables,
     })),
 }));

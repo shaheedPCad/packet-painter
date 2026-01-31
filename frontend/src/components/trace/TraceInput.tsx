@@ -3,13 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTraceSession } from '@/hooks/useTraceSession';
 import { useTraceStore } from '@/stores/traceStore';
-import { Play, Trash2, Loader2, Plane } from 'lucide-react';
+import { Play, Trash2, Loader2, Cable } from 'lucide-react';
 
 export function TraceInput() {
   const [target, setTarget] = useState('tokyo.jp');
-  const { startTrace, cancelTrace, clearTrace, isRunning, isCompleted, hasSession } =
+  const { startTrace, cancelTrace, clearTrace, isRunning, hasSession } =
     useTraceSession();
-  const { toggleFlightMode, flightMode } = useTraceStore();
+  const { showSubmarineCables, toggleSubmarineCables } = useTraceStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,18 +72,18 @@ export function TraceInput() {
         )}
       </div>
 
-      {/* Flight Mode button - only shown when trace is completed */}
-      {isCompleted && !flightMode.enabled && (
-        <Button
-          type="button"
-          variant="secondary"
-          className="w-full"
-          onClick={toggleFlightMode}
-        >
-          <Plane className="mr-2 h-4 w-4" />
-          Flight Mode
-        </Button>
-      )}
+      {/* Submarine cables toggle */}
+      <label className="flex items-center gap-2 text-sm cursor-pointer">
+        <input
+          type="checkbox"
+          checked={showSubmarineCables}
+          onChange={toggleSubmarineCables}
+          className="rounded border-border"
+        />
+        <Cable className="h-4 w-4 text-muted-foreground" />
+        <span className="text-muted-foreground">Show submarine cables</span>
+      </label>
+
       <p className="text-xs text-muted-foreground">
         Try "tokyo.jp" for SF→Tokyo or "london.uk" for NYC→London
       </p>
