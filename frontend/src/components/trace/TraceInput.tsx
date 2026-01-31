@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTraceSession } from '@/hooks/useTraceSession';
-import { Play, Square, Trash2, Loader2 } from 'lucide-react';
+import { useTraceStore } from '@/stores/traceStore';
+import { Play, Trash2, Loader2, Plane } from 'lucide-react';
 
 export function TraceInput() {
   const [target, setTarget] = useState('tokyo.jp');
-  const { startTrace, cancelTrace, clearTrace, isRunning, hasSession } =
+  const { startTrace, cancelTrace, clearTrace, isRunning, isCompleted, hasSession } =
     useTraceSession();
+  const { toggleFlightMode, flightMode } = useTraceStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +71,19 @@ export function TraceInput() {
           </Button>
         )}
       </div>
+
+      {/* Flight Mode button - only shown when trace is completed */}
+      {isCompleted && !flightMode.enabled && (
+        <Button
+          type="button"
+          variant="secondary"
+          className="w-full"
+          onClick={toggleFlightMode}
+        >
+          <Plane className="mr-2 h-4 w-4" />
+          Flight Mode
+        </Button>
+      )}
       <p className="text-xs text-muted-foreground">
         Try "tokyo.jp" for SF→Tokyo or "london.uk" for NYC→London
       </p>
