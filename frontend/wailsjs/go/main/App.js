@@ -6,6 +6,10 @@ export function CancelTrace() {
   return window['go']['main']['App']['CancelTrace']();
 }
 
+export function GetSubmarineCables() {
+  return window['go']['main']['App']['GetSubmarineCables']();
+}
+
 export function GetTraceStatus() {
   return window['go']['main']['App']['GetTraceStatus']();
 }

@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"packet-painter/internal/cables"
 	"packet-painter/internal/trace"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -12,14 +13,17 @@ import (
 
 // App struct
 type App struct {
-	ctx     context.Context
-	session *trace.Session
-	mu      sync.Mutex
+	ctx          context.Context
+	session      *trace.Session
+	mu           sync.Mutex
+	cableService *cables.Service
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{
+		cableService: cables.NewService(),
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -113,4 +117,9 @@ func (a *App) GetTraceStatus() bool {
 		return false
 	}
 	return a.session.IsRunning()
+}
+
+// GetSubmarineCables fetches submarine cable data from TeleGeography API
+func (a *App) GetSubmarineCables() ([]cables.Cable, error) {
+	return a.cableService.FetchCables()
 }

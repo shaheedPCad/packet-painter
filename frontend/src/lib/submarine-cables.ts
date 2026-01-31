@@ -1,7 +1,9 @@
 /**
  * Submarine cable data fetching and processing
- * Data source: TeleGeography Submarine Cable Map API
+ * Data source: TeleGeography Submarine Cable Map API (fetched via Go backend)
  */
+
+import { GetSubmarineCables } from '../../wailsjs/go/main/App';
 
 export interface SubmarineCable {
   id: string;
@@ -11,27 +13,6 @@ export interface SubmarineCable {
   isHighlighted?: boolean;
 }
 
-interface CableFeature {
-  type: 'Feature';
-  properties: {
-    id: string;
-    name: string;
-    color?: string;
-  };
-  geometry: {
-    type: 'MultiLineString' | 'LineString';
-    coordinates: number[][][] | number[][];
-  };
-}
-
-interface CableGeoJSON {
-  type: 'FeatureCollection';
-  features: CableFeature[];
-}
-
-const CABLE_API_URL =
-  'https://www.submarinecablemap.com/api/v3/cable/cable-geo.json';
-
 // Default subtle blue color for cables
 const DEFAULT_CABLE_COLOR = 'rgba(0, 100, 180, 0.3)';
 
@@ -39,57 +20,23 @@ const DEFAULT_CABLE_COLOR = 'rgba(0, 100, 180, 0.3)';
 export const HIGHLIGHTED_CABLE_COLOR = '#00ffff';
 
 /**
- * Fetch submarine cables from TeleGeography API
+ * Fetch submarine cables via Go backend (avoids CORS issues)
  */
 export async function fetchSubmarineCables(): Promise<SubmarineCable[]> {
   try {
-    const response = await fetch(CABLE_API_URL);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch cables: ${response.status}`);
-    }
-
-    const data: CableGeoJSON = await response.json();
-    return parseCableGeoJSON(data);
+    const cables = await GetSubmarineCables();
+    // Convert backend Cable type to frontend SubmarineCable
+    return cables.map((cable) => ({
+      id: cable.id,
+      name: cable.name,
+      color: cable.color || DEFAULT_CABLE_COLOR,
+      coordinates: cable.coordinates as [number, number][],
+      isHighlighted: false,
+    }));
   } catch (error) {
     console.error('Error fetching submarine cables:', error);
     return [];
   }
-}
-
-/**
- * Parse GeoJSON cable data into our format
- * TeleGeography uses MultiLineString for cables with multiple segments
- */
-function parseCableGeoJSON(data: CableGeoJSON): SubmarineCable[] {
-  const cables: SubmarineCable[] = [];
-
-  for (const feature of data.features) {
-    const { properties, geometry } = feature;
-
-    if (!properties.name || !geometry) continue;
-
-    // Handle both MultiLineString and LineString
-    const coordArrays =
-      geometry.type === 'MultiLineString'
-        ? geometry.coordinates
-        : [geometry.coordinates];
-
-    // Flatten MultiLineString into separate cable entries for each segment
-    // This makes rendering more efficient with react-globe.gl paths
-    coordArrays.forEach((coords, segmentIndex) => {
-      if (!Array.isArray(coords) || coords.length < 2) return;
-
-      cables.push({
-        id: `${properties.id || properties.name}-${segmentIndex}`,
-        name: properties.name,
-        color: properties.color || DEFAULT_CABLE_COLOR,
-        coordinates: coords as [number, number][],
-        isHighlighted: false,
-      });
-    });
-  }
-
-  return cables;
 }
 
 /**
