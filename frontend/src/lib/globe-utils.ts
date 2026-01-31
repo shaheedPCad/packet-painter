@@ -42,10 +42,13 @@ export function generateArcs(
 ): GlobeArc[] {
   const arcs: GlobeArc[] = [];
 
-  if (hops.length === 0) return arcs;
+  // Filter hops that have location data
+  const hopsWithLocation = hops.filter((hop) => hop.location !== null);
 
-  // First arc: source to first hop
-  const firstHop = hops[0];
+  if (hopsWithLocation.length === 0) return arcs;
+
+  // First arc: source to first hop with location
+  const firstHop = hopsWithLocation[0];
   if (source && firstHop.location) {
     arcs.push({
       startLat: source.latitude,
@@ -59,23 +62,21 @@ export function generateArcs(
     });
   }
 
-  // Subsequent arcs: hop to hop
-  for (let i = 1; i < hops.length; i++) {
-    const prevHop = hops[i - 1];
-    const currentHop = hops[i];
+  // Subsequent arcs: connect hops with location, skipping timeouts
+  for (let i = 1; i < hopsWithLocation.length; i++) {
+    const prevHop = hopsWithLocation[i - 1];
+    const currentHop = hopsWithLocation[i];
 
-    if (prevHop.location && currentHop.location) {
-      arcs.push({
-        startLat: prevHop.location.latitude,
-        startLng: prevHop.location.longitude,
-        endLat: currentHop.location.latitude,
-        endLng: currentHop.location.longitude,
-        color: getLatencyColor(currentHop.avgRtt),
-        dashLength: 0.5,
-        dashGap: 0.2,
-        dashAnimateTime: 2000,
-      });
-    }
+    arcs.push({
+      startLat: prevHop.location!.latitude,
+      startLng: prevHop.location!.longitude,
+      endLat: currentHop.location!.latitude,
+      endLng: currentHop.location!.longitude,
+      color: getLatencyColor(currentHop.avgRtt),
+      dashLength: 0.5,
+      dashGap: 0.2,
+      dashAnimateTime: 2000,
+    });
   }
 
   return arcs;
