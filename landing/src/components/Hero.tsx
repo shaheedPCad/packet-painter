@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowDown, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export function Hero() {
   return (
@@ -67,17 +67,6 @@ export function Hero() {
             className="px-8 py-4 bg-card hover:bg-card/80 text-foreground border border-border rounded-xl font-body font-medium text-lg transition-all"
           >
             Learn More
-          </a>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
-        >
-          <a href="#showcase" className="block animate-bounce text-primary hover:text-primary/80 transition-colors">
-            <ArrowDown className="w-8 h-8" />
           </a>
         </motion.div>
       </div>
