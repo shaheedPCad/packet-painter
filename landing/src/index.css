@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+/* Starfield background animation */
+.starfield {
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
+    radial-gradient(2px 2px at 160px 120px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 230px 80px, #ffffff, transparent),
+    radial-gradient(2px 2px at 300px 200px, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 350px 150px, #ffffff, transparent),
+    radial-gradient(2px 2px at 420px 60px, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 480px 220px, #ffffff, transparent),
+    radial-gradient(2px 2px at 550px 100px, rgba(255, 255, 255, 0.75), transparent),
+    radial-gradient(1px 1px at 600px 180px, #ffffff, transparent),
+    radial-gradient(2px 2px at 680px 250px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 750px 50px, #ffffff, transparent),
+    radial-gradient(2px 2px at 820px 300px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 890px 130px, #ffffff, transparent),
+    radial-gradient(2px 2px at 960px 280px, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 1020px 90px, #ffffff, transparent),
+    radial-gradient(2px 2px at 1100px 200px, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 1180px 160px, #ffffff, transparent),
+    radial-gradient(2px 2px at 1250px 70px, rgba(255, 255, 255, 0.75), transparent);
+  background-size: 1300px 350px;
+  animation: starfield-move 60s linear infinite;
+}
+
+@keyframes starfield-move {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -1300px 350px;
+  }
+}
+
+/* Additional stars layer for depth */
+.starfield::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 50px 100px, rgba(139, 92, 246, 0.6), transparent),
+    radial-gradient(1px 1px at 150px 250px, rgba(139, 92, 246, 0.5), transparent),
+    radial-gradient(1px 1px at 280px 180px, rgba(139, 92, 246, 0.7), transparent),
+    radial-gradient(1px 1px at 400px 80px, rgba(139, 92, 246, 0.4), transparent),
+    radial-gradient(1px 1px at 520px 300px, rgba(139, 92, 246, 0.6), transparent),
+    radial-gradient(1px 1px at 650px 150px, rgba(139, 92, 246, 0.5), transparent),
+    radial-gradient(1px 1px at 780px 220px, rgba(139, 92, 246, 0.7), transparent),
+    radial-gradient(1px 1px at 900px 50px, rgba(139, 92, 246, 0.4), transparent),
+    radial-gradient(1px 1px at 1050px 280px, rgba(139, 92, 246, 0.6), transparent),
+    radial-gradient(1px 1px at 1200px 120px, rgba(139, 92, 246, 0.5), transparent);
+  background-size: 1300px 350px;
+  animation: starfield-move 90s linear infinite reverse;
+}
+
+/* Twinkling animation for select stars */
+.starfield::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 100px 200px, #ffffff, transparent),
+    radial-gradient(2px 2px at 350px 100px, #ffffff, transparent),
+    radial-gradient(2px 2px at 600px 280px, #ffffff, transparent),
+    radial-gradient(2px 2px at 850px 180px, #ffffff, transparent),
+    radial-gradient(2px 2px at 1100px 250px, #ffffff, transparent);
+  background-size: 1200px 400px;
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(270 30% 7%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(270 30% 20%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(270 30% 30%);
+}
+
+/* Selection color */
+::selection {
+  background: hsl(270 70% 60% / 0.3);
+  color: hsl(270 10% 95%);
+}

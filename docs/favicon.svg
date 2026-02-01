@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="globe-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#6366f1"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="45" fill="url(#globe-gradient)" opacity="0.9"/>
+  <ellipse cx="50" cy="50" rx="45" ry="15" fill="none" stroke="#fff" stroke-width="2" opacity="0.5"/>
+  <ellipse cx="50" cy="50" rx="15" ry="45" fill="none" stroke="#fff" stroke-width="2" opacity="0.5"/>
+  <line x1="5" y1="50" x2="95" y2="50" stroke="#fff" stroke-width="2" opacity="0.3"/>
+  <circle cx="30" cy="35" r="4" fill="#22d3ee"/>
+  <circle cx="70" cy="60" r="4" fill="#22d3ee"/>
+  <line x1="30" y1="35" x2="70" y2="60" stroke="#22d3ee" stroke-width="2" stroke-dasharray="4,4">
+    <animate attributeName="stroke-dashoffset" from="0" to="-8" dur="1s" repeatCount="indefinite"/>
+  </line>
+</svg>
