@@ -18,6 +18,8 @@ export interface GlobePoint {
   color: string;
   label: string;
   hopNumber: number;
+  isDataCenter: boolean;
+  dataCenter?: string;
 }
 
 // Color scale based on latency
@@ -99,6 +101,7 @@ export function generatePoints(
       color: SOURCE_COLOR,
       label: source.city || 'Source',
       hopNumber: 0,
+      isDataCenter: false,
     });
   }
 
@@ -107,14 +110,37 @@ export function generatePoints(
     if (hop.location) {
       const isSelected = selectedHopIndex === index;
       const isDestination = hop.isDestination;
+      const isDataCenter = !!hop.dataCenter;
+
+      // Determine point color: datacenter color > destination color > latency color
+      let pointColor: string;
+      if (hop.dataCenter) {
+        pointColor = hop.dataCenter.color;
+      } else if (isDestination) {
+        pointColor = DESTINATION_COLOR;
+      } else {
+        pointColor = getLatencyColor(hop.avgRtt);
+      }
+
+      // Datacenter points are slightly larger
+      let pointSize = 0.6;
+      if (isSelected) {
+        pointSize = 1.2;
+      } else if (isDataCenter) {
+        pointSize = 0.9;
+      } else if (isDestination) {
+        pointSize = 1.0;
+      }
 
       points.push({
         lat: hop.location.latitude,
         lng: hop.location.longitude,
-        size: isSelected ? 1.2 : isDestination ? 1.0 : 0.6,
-        color: isDestination ? DESTINATION_COLOR : getLatencyColor(hop.avgRtt),
+        size: pointSize,
+        color: pointColor,
         label: hop.location.city || hop.ipAddress,
         hopNumber: hop.hopNumber,
+        isDataCenter,
+        dataCenter: hop.dataCenter?.provider,
       });
     }
   });

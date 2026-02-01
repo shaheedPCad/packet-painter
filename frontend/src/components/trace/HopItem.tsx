@@ -3,8 +3,9 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Hop } from '@/types';
 import { getLatencyColor, formatRtt } from '@/lib/globe-utils';
+import { getDatacenterShortName } from '@/lib/datacenter-utils';
 import { cn } from '@/lib/utils';
-import { MapPin, Clock, Globe } from 'lucide-react';
+import { MapPin, Clock, Cloud } from 'lucide-react';
 
 interface HopItemProps {
   hop: Hop;
@@ -43,6 +44,20 @@ export function HopItem({ hop, index, isSelected, onSelect }: HopItemProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="font-mono text-sm truncate">{hop.ipAddress}</span>
+              {hop.dataCenter && (
+                <Badge
+                  variant="secondary"
+                  className="text-xs flex items-center gap-1"
+                  style={{
+                    backgroundColor: `${hop.dataCenter.color}20`,
+                    color: hop.dataCenter.color,
+                    borderColor: `${hop.dataCenter.color}40`,
+                  }}
+                >
+                  <Cloud className="h-3 w-3" />
+                  {getDatacenterShortName(hop.dataCenter.provider)}
+                </Badge>
+              )}
               {hop.isDestination && (
                 <Badge variant="secondary" className="text-xs bg-purple-500/20 text-purple-300">
                   Destination

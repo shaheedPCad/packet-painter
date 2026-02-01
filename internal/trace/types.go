@@ -1,18 +1,22 @@
 package trace
 
-import "packet-painter/internal/geo"
+import (
+	"packet-painter/internal/datacenter"
+	"packet-painter/internal/geo"
+)
 
 // Hop represents a single hop in a traceroute
 type Hop struct {
-	HopNumber     int           `json:"hopNumber"`
-	IPAddress     string        `json:"ipAddress"`
-	Hostname      string        `json:"hostname,omitempty"`
-	RTT           []float64     `json:"rtt"`
-	AvgRTT        float64       `json:"avgRtt"`
-	Location      *geo.Location `json:"location"`
-	IsTimeout     bool          `json:"isTimeout"`
-	IsDestination bool          `json:"isDestination"`
-	Timestamp     int64         `json:"timestamp"`
+	HopNumber     int                    `json:"hopNumber"`
+	IPAddress     string                 `json:"ipAddress"`
+	Hostname      string                 `json:"hostname,omitempty"`
+	RTT           []float64              `json:"rtt"`
+	AvgRTT        float64                `json:"avgRtt"`
+	Location      *geo.Location          `json:"location"`
+	DataCenter    *datacenter.DataCenter `json:"dataCenter,omitempty"`
+	IsTimeout     bool                   `json:"isTimeout"`
+	IsDestination bool                   `json:"isDestination"`
+	Timestamp     int64                  `json:"timestamp"`
 }
 
 // TraceStartedEvent is emitted when a trace begins

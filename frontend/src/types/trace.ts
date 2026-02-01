@@ -1,5 +1,10 @@
 import { GeoLocation } from './geo';
 
+export interface DataCenter {
+  provider: string;
+  color: string;
+}
+
 export interface Hop {
   hopNumber: number;
   ipAddress: string;
@@ -7,6 +12,7 @@ export interface Hop {
   rtt: number[];
   avgRtt: number;
   location: GeoLocation | null;
+  dataCenter?: DataCenter | null;
   isTimeout: boolean;
   isDestination: boolean;
   timestamp: number;

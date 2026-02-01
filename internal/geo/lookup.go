@@ -17,6 +17,8 @@ type Location struct {
 	Region      string  `json:"region,omitempty"`
 	Country     string  `json:"country,omitempty"`
 	CountryCode string  `json:"countryCode,omitempty"`
+	ISP         string  `json:"isp,omitempty"`
+	Org         string  `json:"org,omitempty"`
 }
 
 // apiResponse represents the response from ip-api.com
@@ -112,6 +114,8 @@ func (l *Lookup) fetchFromAPI(ip string) *Location {
 		Region:      data.Region,
 		Country:     data.Country,
 		CountryCode: data.CountryCode,
+		ISP:         data.ISP,
+		Org:         data.Org,
 	}
 }
 

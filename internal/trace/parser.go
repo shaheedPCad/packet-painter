@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"packet-painter/internal/datacenter"
 	"packet-painter/internal/geo"
 )
 
@@ -94,12 +95,19 @@ func parseUnixHopLine(line string, destinationIP string, geoLookup GeoLookupFunc
 		location = geoLookup(ipAddress)
 	}
 
+	// Detect datacenter from ISP/Org info
+	var dc *datacenter.DataCenter
+	if location != nil {
+		dc = datacenter.Detect(location.Org, location.ISP, "")
+	}
+
 	return &Hop{
 		HopNumber:     hopNum,
 		IPAddress:     ipAddress,
 		RTT:           rttValues,
 		AvgRTT:        avgRTT,
 		Location:      location,
+		DataCenter:    dc,
 		IsTimeout:     false,
 		IsDestination: ipAddress == destinationIP,
 		Timestamp:     time.Now().UnixMilli(),
@@ -230,12 +238,19 @@ func parseWindowsHopLine(line string, destinationIP string, geoLookup GeoLookupF
 		location = geoLookup(ipAddress)
 	}
 
+	// Detect datacenter from ISP/Org info
+	var dc *datacenter.DataCenter
+	if location != nil {
+		dc = datacenter.Detect(location.Org, location.ISP, "")
+	}
+
 	return &Hop{
 		HopNumber:     hopNum,
 		IPAddress:     ipAddress,
 		RTT:           rttValues,
 		AvgRTT:        avgRTT,
 		Location:      location,
+		DataCenter:    dc,
 		IsTimeout:     false,
 		IsDestination: ipAddress == destinationIP,
 		Timestamp:     time.Now().UnixMilli(),

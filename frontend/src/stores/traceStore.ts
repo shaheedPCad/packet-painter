@@ -5,6 +5,7 @@ interface TraceState {
   session: TraceSession | null;
   selectedHopIndex: number | null;
   showSubmarineCables: boolean;
+  showLatencyHeatmap: boolean;
 
   // Actions
   startSession: (id: string, target: string, source: GeoLocation) => void;
@@ -15,6 +16,7 @@ interface TraceState {
   selectHop: (index: number | null) => void;
   reset: () => void;
   toggleSubmarineCables: () => void;
+  toggleLatencyHeatmap: () => void;
 }
 
 const initialSession: TraceSession = {
@@ -30,6 +32,7 @@ export const useTraceStore = create<TraceState>((set) => ({
   session: null,
   selectedHopIndex: null,
   showSubmarineCables: true,
+  showLatencyHeatmap: false,
 
   startSession: (id, target, source) =>
     set((state) => {
@@ -112,5 +115,10 @@ export const useTraceStore = create<TraceState>((set) => ({
   toggleSubmarineCables: () =>
     set((state) => ({
       showSubmarineCables: !state.showSubmarineCables,
+    })),
+
+  toggleLatencyHeatmap: () =>
+    set((state) => ({
+      showLatencyHeatmap: !state.showLatencyHeatmap,
     })),
 }));

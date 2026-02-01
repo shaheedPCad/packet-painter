@@ -9,20 +9,25 @@ import {
   GlobePoint,
 } from '@/lib/globe-utils';
 import { useSubmarineCables } from '@/hooks/useSubmarineCables';
+import { useLatencyHeatmap } from '@/hooks/useLatencyHeatmap';
 import { SubmarineCable, HIGHLIGHTED_CABLE_COLOR } from '@/lib/submarine-cables';
+import { getHeatmapColor, HeatmapPoint } from '@/lib/latency-heatmap';
 import { motion } from 'framer-motion';
 
 export function GlobeView() {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { session, selectedHopIndex, selectHop } = useTraceStore();
+  const { session, selectedHopIndex, selectHop, showLatencyHeatmap } = useTraceStore();
 
   // Submarine cables
   const { cables, showCables } = useSubmarineCables();
 
-  const hops = session?.hops ?? [];
+  // Latency heatmap
   const source = session?.source ?? null;
+  const heatmapData = useLatencyHeatmap(source, showLatencyHeatmap);
+
+  const hops = session?.hops ?? [];
   const isRunning = session?.status === 'running';
 
   // Generate visualization data
@@ -90,9 +95,16 @@ export function GlobeView() {
   const getPointRadius = (d: object) => (d as GlobePoint).size;
   const getPointLabel = (d: object) => {
     const p = d as GlobePoint;
+    const hopInfo = p.hopNumber > 0
+      ? `<div class="text-muted-foreground">Hop ${p.hopNumber}</div>`
+      : '<div class="text-green-500">Source</div>';
+    const dcInfo = p.isDataCenter && p.dataCenter
+      ? `<div style="color: ${p.color}">&#9729; ${p.dataCenter}</div>`
+      : '';
     return `<div class="bg-card/90 backdrop-blur px-2 py-1 rounded text-xs">
       <div class="font-medium">${p.label}</div>
-      ${p.hopNumber > 0 ? `<div class="text-muted-foreground">Hop ${p.hopNumber}</div>` : '<div class="text-green-500">Source</div>'}
+      ${hopInfo}
+      ${dcInfo}
     </div>`;
   };
 
@@ -115,6 +127,15 @@ export function GlobeView() {
       ${cable.isHighlighted ? '<div class="text-cyan-400">Active route</div>' : ''}
     </div>`;
   };
+
+  // Heatmap accessors
+  const heatmapsDataArray = useMemo(
+    () => (showLatencyHeatmap && heatmapData.length > 0 ? [heatmapData] : []),
+    [showLatencyHeatmap, heatmapData]
+  );
+  const getHeatmapLat = (d: object) => (d as HeatmapPoint).lat;
+  const getHeatmapLng = (d: object) => (d as HeatmapPoint).lng;
+  const getHeatmapWeight = (d: object) => (d as HeatmapPoint).weight;
 
   return (
     <motion.div
@@ -163,6 +184,14 @@ export function GlobeView() {
         pathDashAnimateTime={0}
         pathLabel={getPathLabel}
         pathTransitionDuration={0}
+        // Latency heatmap
+        heatmapsData={heatmapsDataArray}
+        heatmapPointLat={getHeatmapLat}
+        heatmapPointLng={getHeatmapLng}
+        heatmapPointWeight={getHeatmapWeight}
+        heatmapTopAltitude={0.01}
+        heatmapBandwidth={3}
+        heatmapColorFn={getHeatmapColor}
         // Atmosphere
         atmosphereColor="#3a82f7"
         atmosphereAltitude={0.15}
