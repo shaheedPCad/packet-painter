@@ -43,7 +43,13 @@ export function HopItem({ hop, index, isSelected, onSelect }: HopItemProps) {
           {/* Hop details */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-mono text-sm truncate">{hop.ipAddress}</span>
+              <span className="font-mono text-sm truncate">
+                {hop.isTimeout ? (
+                  <span className="text-muted-foreground italic">No response</span>
+                ) : (
+                  hop.ipAddress
+                )}
+              </span>
               {hop.dataCenter && (
                 <Badge
                   variant="secondary"

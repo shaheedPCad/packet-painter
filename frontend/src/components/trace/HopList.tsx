@@ -2,10 +2,10 @@ import { useTraceStore } from '@/stores/traceStore';
 import { HopItem } from './HopItem';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Network, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Network, CheckCircle2, XCircle, Loader2, AlertTriangle } from 'lucide-react';
 
 export function HopList() {
-  const { session, selectedHopIndex, selectHop } = useTraceStore();
+  const { session, selectedHopIndex, selectHop, consecutiveTimeouts } = useTraceStore();
 
   if (!session) {
     return (
@@ -45,6 +45,24 @@ export function HopList() {
         </span>
         <Badge variant="secondary">{hops.length} hops</Badge>
       </div>
+
+      {/* Timeout warning banner */}
+      {status === 'running' && consecutiveTimeouts >= 3 && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-md p-3">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+            <div className="text-sm">
+              <p className="font-medium text-amber-500">
+                {consecutiveTimeouts} consecutive timeouts
+              </p>
+              <p className="text-muted-foreground text-xs mt-1">
+                The target may be blocking traceroute probes. This is common with
+                services like Netflix and Cloudflare.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Source location */}
       {source && (

@@ -6,6 +6,7 @@ interface TraceState {
   selectedHopIndex: number | null;
   showSubmarineCables: boolean;
   showLatencyHeatmap: boolean;
+  consecutiveTimeouts: number;
 
   // Actions
   startSession: (id: string, target: string, source: GeoLocation) => void;
@@ -33,6 +34,7 @@ export const useTraceStore = create<TraceState>((set) => ({
   selectedHopIndex: null,
   showSubmarineCables: true,
   showLatencyHeatmap: false,
+  consecutiveTimeouts: 0,
 
   startSession: (id, target, source) =>
     set((state) => {
@@ -50,6 +52,7 @@ export const useTraceStore = create<TraceState>((set) => ({
           source,
         },
         selectedHopIndex: null,
+        consecutiveTimeouts: 0,
       };
     }),
 
@@ -67,6 +70,7 @@ export const useTraceStore = create<TraceState>((set) => ({
         },
         // Auto-select the latest hop
         selectedHopIndex: state.session.hops.length,
+        consecutiveTimeouts: hop.isTimeout ? state.consecutiveTimeouts + 1 : 0,
       };
     }),
 
@@ -110,7 +114,7 @@ export const useTraceStore = create<TraceState>((set) => ({
 
   selectHop: (index) => set({ selectedHopIndex: index }),
 
-  reset: () => set({ session: null, selectedHopIndex: null }),
+  reset: () => set({ session: null, selectedHopIndex: null, consecutiveTimeouts: 0 }),
 
   toggleSubmarineCables: () =>
     set((state) => ({

@@ -1,20 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTraceSession } from '@/hooks/useTraceSession';
 import { useTraceStore } from '@/stores/traceStore';
-import { Play, Trash2, Loader2, Cable } from 'lucide-react';
+import { Play, Trash2, Loader2, Cable, Square } from 'lucide-react';
 
 export function TraceInput() {
   const [target, setTarget] = useState('tokyo.jp');
+  const [isCancelling, setIsCancelling] = useState(false);
   const { startTrace, cancelTrace, clearTrace, isRunning, hasSession } =
     useTraceSession();
   const { showSubmarineCables, toggleSubmarineCables } = useTraceStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Reset cancelling state when trace stops
+  useEffect(() => {
+    if (!isRunning) setIsCancelling(false);
+  }, [isRunning]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isRunning) {
-      cancelTrace();
+      setIsCancelling(true);
+      await cancelTrace();
     } else {
       startTrace(target);
     }
@@ -46,11 +53,16 @@ export function TraceInput() {
           type="submit"
           className="flex-1"
           variant={isRunning ? 'destructive' : 'default'}
-          disabled={!target.trim() && !isRunning}
+          disabled={(!target.trim() && !isRunning) || isCancelling}
         >
-          {isRunning ? (
+          {isCancelling ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Stopping...
+            </>
+          ) : isRunning ? (
+            <>
+              <Square className="mr-2 h-4 w-4" />
               Stop
             </>
           ) : (
