@@ -193,7 +193,7 @@ export function GlobeView() {
         heatmapBandwidth={3}
         heatmapColorFn={getHeatmapColor}
         // Atmosphere
-        atmosphereColor="#3a82f7"
+        atmosphereColor="#8b5cf6"
         atmosphereAltitude={0.15}
         // Performance
         animateIn={true}

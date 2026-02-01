@@ -9,7 +9,7 @@ export function Sidebar() {
   const error = session?.status === 'error' ? session.error : null;
 
   return (
-    <aside className="w-80 bg-card/40 flex flex-col h-full" style={{ boxShadow: '1px 0 3px 0 rgb(0 0 0 / 0.2)' }}>
+    <aside className="w-80 flex flex-col h-full border-r border-border/30" style={{ boxShadow: '1px 0 3px 0 rgb(0 0 0 / 0.2)', background: 'linear-gradient(180deg, hsl(270 25% 8% / 0.95) 0%, hsl(270 30% 5% / 0.95) 100%)' }}>
       <div className="p-5 border-b border-border/50">
         <TraceInput />
         {error && (

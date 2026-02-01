@@ -45,7 +45,7 @@ export function TraceInput() {
           value={target}
           onChange={(e) => setTarget(e.target.value)}
           disabled={isRunning}
-          className="bg-background/50 focus:ring-2 focus:ring-primary/30 transition-shadow"
+          className="bg-background/50 focus:ring-2 focus:ring-primary/40 focus:border-primary/50 transition-all"
         />
       </div>
       <div className="flex gap-2">
@@ -90,7 +90,7 @@ export function TraceInput() {
           type="checkbox"
           checked={showSubmarineCables}
           onChange={toggleSubmarineCables}
-          className="rounded border-border"
+          className="rounded border-border accent-primary"
         />
         <Cable className="h-4 w-4 text-muted-foreground" />
         <span className="text-muted-foreground">Show submarine cables</span>

@@ -4,36 +4,37 @@
 
 @layer base {
   :root {
-    /* Dark theme by default - premium dark blue theme */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 47% 6%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 47% 6%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --radius: 0.625rem;
-    --chart-1: 220 70% 50%;
+    /* Deep space purple theme */
+    --background: 270 50% 4%;
+    --foreground: 270 10% 95%;
+    --card: 270 30% 7%;
+    --card-foreground: 270 10% 95%;
+    --popover: 270 30% 7%;
+    --popover-foreground: 270 10% 95%;
+    --primary: 270 70% 60%;
+    --primary-foreground: 270 10% 98%;
+    --secondary: 270 20% 15%;
+    --secondary-foreground: 270 10% 90%;
+    --muted: 270 15% 15%;
+    --muted-foreground: 270 10% 55%;
+    --accent: 280 60% 50%;
+    --accent-foreground: 270 10% 98%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 10% 98%;
+    --border: 270 20% 18%;
+    --input: 270 20% 12%;
+    --ring: 270 70% 55%;
+    --radius: 0.75rem;
+    --chart-1: 270 70% 60%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Subtle shadow for modern depth */
-    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-    --shadow-elevated: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    /* Enhanced shadows with purple glow */
+    --shadow-subtle: 0 1px 3px rgb(0 0 0 / 0.4), 0 0 10px rgb(139 92 246 / 0.03);
+    --shadow-elevated: 0 4px 12px rgb(0 0 0 / 0.4), 0 0 20px rgb(139 92 246 / 0.05);
+    --shadow-glow: 0 0 20px rgb(139 92 246 / 0.15);
   }
 }
 
@@ -79,7 +80,20 @@
 .globe-container {
   width: 100%;
   height: 100%;
-  background: radial-gradient(ellipse at center, hsl(217 32% 8%) 0%, hsl(222 84% 4.9%) 100%);
+  background: radial-gradient(ellipse at center, hsl(270 30% 8%) 0%, hsl(270 50% 4%) 100%);
+}
+
+/* Purple gradient utilities */
+.gradient-purple-subtle {
+  background: linear-gradient(135deg, hsl(270 30% 8%) 0%, hsl(270 40% 5%) 100%);
+}
+
+.gradient-purple-vertical {
+  background: linear-gradient(180deg, hsl(270 25% 9%) 0%, hsl(270 30% 6%) 100%);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgb(139 92 246 / 0.2);
 }
 
 /* Prevent text selection on UI elements during interaction */

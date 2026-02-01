@@ -25,11 +25,11 @@ export function HopItem({ hop, index, isSelected, onSelect }: HopItemProps) {
     >
       <Card
         className={cn(
-          'p-4 cursor-pointer transition-all duration-200 hover:bg-accent/50 hover:scale-[1.01]',
+          'p-4 cursor-pointer transition-all duration-200 hover:bg-accent/40',
           isSelected && 'ring-2 ring-primary bg-accent/30',
           hop.isDestination && 'border-purple-500/50'
         )}
-        style={isSelected ? { boxShadow: 'var(--shadow-elevated)' } : undefined}
+        style={isSelected ? { boxShadow: 'var(--shadow-elevated), var(--shadow-glow)' } : undefined}
         onClick={onSelect}
       >
         <div className="flex items-start gap-3">
