@@ -22,8 +22,12 @@ export interface GlobePoint {
   dataCenter?: string;
 }
 
+// Timeout color
+export const TIMEOUT_COLOR = '#6b7280'; // Gray
+
 // Color scale based on latency
-export function getLatencyColor(avgRtt: number): string {
+export function getLatencyColor(avgRtt: number, isTimeout?: boolean): string {
+  if (isTimeout) return TIMEOUT_COLOR;
   if (avgRtt < 50) return '#22c55e'; // Green - excellent
   if (avgRtt < 100) return '#84cc16'; // Lime - good
   if (avgRtt < 150) return '#eab308'; // Yellow - moderate

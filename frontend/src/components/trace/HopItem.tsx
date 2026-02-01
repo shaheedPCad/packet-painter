@@ -15,7 +15,7 @@ interface HopItemProps {
 }
 
 export function HopItem({ hop, index, isSelected, onSelect }: HopItemProps) {
-  const latencyColor = getLatencyColor(hop.avgRtt);
+  const latencyColor = getLatencyColor(hop.avgRtt, hop.isTimeout);
 
   return (
     <motion.div
@@ -83,10 +83,17 @@ export function HopItem({ hop, index, isSelected, onSelect }: HopItemProps) {
                   )}
                 </span>
               )}
-              <span className="flex items-center gap-1" style={{ color: latencyColor }}>
-                <Clock className="h-3 w-3" />
-                {formatRtt(hop.avgRtt)}
-              </span>
+              {hop.isTimeout ? (
+                <span className="flex items-center gap-1 text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  Timeout
+                </span>
+              ) : (
+                <span className="flex items-center gap-1" style={{ color: latencyColor }}>
+                  <Clock className="h-3 w-3" />
+                  {formatRtt(hop.avgRtt)}
+                </span>
+              )}
             </div>
           </div>
         </div>
