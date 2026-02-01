@@ -10,12 +10,12 @@ export function Header() {
   const toggleLatencyHeatmap = useTraceStore((state) => state.toggleLatencyHeatmap);
 
   return (
-    <header className="h-14 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-4">
-      <div className="flex items-center gap-3">
-        <Globe className="h-6 w-6 text-primary" />
-        <h1 className="text-lg font-semibold tracking-tight">Packet Painter</h1>
+    <header className="h-16 bg-card/60 backdrop-blur-sm flex items-center justify-between px-6" style={{ boxShadow: 'var(--shadow-subtle)' }}>
+      <div className="flex items-center gap-4">
+        <Globe className="h-7 w-7 text-primary" />
+        <h1 className="text-xl font-semibold tracking-tight">Packet Painter</h1>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <Button
           variant={showLatencyHeatmap ? 'default' : 'outline'}
           size="sm"

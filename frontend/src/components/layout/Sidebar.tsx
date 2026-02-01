@@ -9,8 +9,8 @@ export function Sidebar() {
   const error = session?.status === 'error' ? session.error : null;
 
   return (
-    <aside className="w-80 border-r border-border bg-card/30 flex flex-col h-full">
-      <div className="p-4 border-b border-border">
+    <aside className="w-80 bg-card/40 flex flex-col h-full" style={{ boxShadow: '1px 0 3px 0 rgb(0 0 0 / 0.2)' }}>
+      <div className="p-5 border-b border-border/50">
         <TraceInput />
         {error && (
           <div className="mt-3 p-3 bg-destructive/10 border border-destructive/20 rounded-md">

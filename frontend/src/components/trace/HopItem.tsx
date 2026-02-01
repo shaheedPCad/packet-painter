@@ -25,16 +25,17 @@ export function HopItem({ hop, index, isSelected, onSelect }: HopItemProps) {
     >
       <Card
         className={cn(
-          'p-3 cursor-pointer transition-all hover:bg-accent/50',
+          'p-4 cursor-pointer transition-all duration-200 hover:bg-accent/50 hover:scale-[1.01]',
           isSelected && 'ring-2 ring-primary bg-accent/30',
           hop.isDestination && 'border-purple-500/50'
         )}
+        style={isSelected ? { boxShadow: 'var(--shadow-elevated)' } : undefined}
         onClick={onSelect}
       >
         <div className="flex items-start gap-3">
           {/* Hop number indicator */}
           <div
-            className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+            className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
             style={{ backgroundColor: `${latencyColor}20`, color: latencyColor }}
           >
             {hop.hopNumber}

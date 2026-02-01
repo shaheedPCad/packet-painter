@@ -33,9 +33,9 @@ export function TraceInput() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <div className="space-y-2">
-        <label htmlFor="target" className="text-sm font-medium text-foreground">
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2.5">
+        <label htmlFor="target" className="text-sm font-medium text-foreground/90">
           Target Host
         </label>
         <Input
@@ -45,7 +45,7 @@ export function TraceInput() {
           value={target}
           onChange={(e) => setTarget(e.target.value)}
           disabled={isRunning}
-          className="bg-background/50"
+          className="bg-background/50 focus:ring-2 focus:ring-primary/30 transition-shadow"
         />
       </div>
       <div className="flex gap-2">
