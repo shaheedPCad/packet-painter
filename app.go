@@ -97,10 +97,15 @@ func (a *App) CancelTrace() {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	if a.session != nil && a.session.IsRunning() {
+	if a.session != nil {
 		sessionID := a.session.ID
-		a.session.Cancel()
 
+		// Cancel if still running
+		if a.session.IsRunning() {
+			a.session.Cancel()
+		}
+
+		// Always emit cancelled event so frontend can update
 		runtime.EventsEmit(a.ctx, "trace:cancelled", trace.TraceCancelledEvent{
 			SessionID: sessionID,
 			Timestamp: time.Now().UnixMilli(),
