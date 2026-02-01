@@ -22,7 +22,7 @@ export function GlobeShowcase() {
           {/* Screenshot container */}
           <div className="relative bg-card rounded-2xl overflow-hidden border border-border">
             <img
-              src="https://raw.githubusercontent.com/shaheedPCad/packet-painter/main/screenshots/image.png"
+              src="./sample.png"
               alt="Packet Painter showing a traceroute visualization on a 3D globe"
               className="w-full h-auto"
             />

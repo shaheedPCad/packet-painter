@@ -9,10 +9,12 @@ export function detectPlatform(): Platform {
   return 'unknown';
 }
 
+const RELEASES_PAGE = 'https://github.com/shaheedPCad/packet-painter/releases';
+
 export const DOWNLOAD_URLS: Record<KnownPlatform, string> = {
-  windows: 'https://github.com/shaheedPCad/packet-painter/releases/latest/download/Packet-Painter-windows-amd64.exe',
-  macos: 'https://github.com/shaheedPCad/packet-painter/releases/latest/download/Packet-Painter-darwin-universal.zip',
-  linux: 'https://github.com/shaheedPCad/packet-painter/releases/latest/download/Packet-Painter-linux-amd64',
+  windows: RELEASES_PAGE,
+  macos: RELEASES_PAGE,
+  linux: RELEASES_PAGE,
 };
 
 export const PLATFORM_LABELS: Record<KnownPlatform, string> = {
