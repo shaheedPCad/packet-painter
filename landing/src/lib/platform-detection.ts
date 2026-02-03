@@ -11,7 +11,7 @@ export function detectPlatform(): Platform {
 
 export const DOWNLOAD_URLS: Record<KnownPlatform, string> = {
   windows: 'https://github.com/shaheedPCad/packet-painter/releases/latest/download/Packet-Painter-windows-amd64.exe',
-  macos: 'https://github.com/shaheedPCad/packet-painter/releases',
+  macos: 'https://github.com/shaheedPCad/packet-painter/releases/latest/download/Packet-Painter-darwin-universal.zip',
   linux: 'https://github.com/shaheedPCad/packet-painter/releases/latest/download/Packet-Painter-linux-amd64',
 };
 
